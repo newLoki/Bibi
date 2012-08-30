@@ -13,7 +13,7 @@ $app = new Silex\Application();
 $app['debug'] = true;
 
 //register own namespace
-$app['autoloader']->registerNamespace('Pollex', realpath(__DIR__ . '/../src/'));
+$app['autoloader']->registerNamespace('Bibi', realpath(__DIR__ . '/../src/'));
 
 //register Doctrine ORM extension
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
@@ -30,8 +30,8 @@ $app->register(new Nutwerk\Provider\DoctrineORMServiceProvider(), array(
     'db.orm.auto_generate_proxies' => true,
     'db.orm.entities'              => array(array(
         'type'      => 'annotation',
-        'path'      => realpath(__DIR__.'/../src/Pollex/Entity'),
-        'namespace' => 'Pollex\Entity',
+        'path'      => realpath(__DIR__.'/../src/Bibi/Entity'),
+        'namespace' => 'Bibi\Entity',
     )),
 ));
 
