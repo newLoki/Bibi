@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet author="newloki" id="1">
+        <createTable tableName="users">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="surname" type="VARCHAR(255)"/>
+            <column name="lastname" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="birthdate" type="DATE" />
+            <column name="created" type="DATETIME"/>
+            <column name="updated" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="newLoki" id="test1" context="test">
+        <loadData tableName="users" file="data/tests/user.csv">
+            <column name="id" header="id" type="NUMERIC"/>
+            <column name="surname" header="surname" type="STRING"/>
+            <column name="lastname" header="lastname" type="STRING"/>
+            <column name="email" header="email" type="STRING"/>
+            <column name="birthdate" header="birthdate" type="DATE" />
+            <column name="password" header="password" type="STRING"/>
+            <column name="created" header="created" type="DATE"/>
+            <column name="updated" header="updated" type="DATE"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>
