@@ -62,4 +62,7 @@ $app->get('/', function() use ($app) {
     return $app->json($test);
 });
 
+$app->mount('/users', new Bibi\Controller\UserControllerProvider());
+
+
 return $app;
