@@ -11,12 +11,11 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
     {
         $controllers = new ControllerCollection();
 
-        $app->get('/users/index', function() use ($app){
-            return ""; //@todo return a list off all users as json
-        })->bind('user.index');
-
-        $app->get('/users/{id}', function($id) use ($app) {
-            return ""; //@todo return a specific user
+        $app->get('/users/{id}', function($id) use ($app)
+        {
+            $data = new \stdClass();
+            $data->users = array();
+            return $app->json($data); //@todo return a specific user, or all if no id given
         })->bind('user.id');
 
         /*
