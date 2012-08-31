@@ -9,6 +9,7 @@
         "email": "alberto.assmann@mayflower.de",
         "homepage": "newloki.de"
     }],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.2",
         "symfony/event-dispatcher": "dev-master",
