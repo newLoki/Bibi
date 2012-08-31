@@ -1,0 +1,23 @@
+User:
+  properties:
+    surname:
+      - NotNull: ~
+      - NotBlank: ~
+      - MinLength: 3
+      - MaxLength: 255
+    lastname:
+      - NotNull: ~
+      - NotBlank: ~
+      - MinLength: 3
+      - MaxLength: 255
+    name:
+      - NotNull: ~
+      - NotBlank: ~
+      - MinLength: 3
+      - MaxLength: 255
+    email:
+      - Email: ~
+      - MinLength: 3
+      - MaxLength: 255
+    birthdate:
+      - Date:
