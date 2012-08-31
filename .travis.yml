@@ -5,7 +5,7 @@ php:
 before_script:
   - "composer install"
   - "mysql -uroot -e 'create database bibi;'"
-  - 'java -jar build/liquibase.jar --driver=com.mysql.jdbc.Driver --classpath=build/databasedriver/mysql-connector-java-5.1.17-bin.jar --changeLogFile=data/sql/changelog.xml --url="jdbc:mysql://127.0.0.1:3306/bib" --username=root --password="" --contexts="test" migrate'
+  - 'java -jar build/liquibase.jar --driver=com.mysql.jdbc.Driver --classpath=build/databasedriver/mysql-connector-java-5.1.17-bin.jar --changeLogFile=data/sql/changelog.xml --url="jdbc:mysql://127.0.0.1:3306/bibi" --username=root --password="" --contexts="test" migrate'
 env:
   - APPLICATION_ENV=citest
 
