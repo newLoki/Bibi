@@ -1,3 +1,3 @@
-"id","surname","lastname","email","birthdate","created","updated"
-"1","john","doe","john.doe@example.com","1990-01-01 00:00:00","2012-05-21 12:00:00","2012-05-21 12:00:00"
-"2","john","malcowich","john.m@example.com","1990-01-01 00:00:00","2012-05-21 12:00:00","2012-05-21 12:00:00"
+"id","name","surname","lastname","email","birthdate","created","updated"
+"1","jon","john","doe","john.doe@example.com","1990-01-01 00:00:00","2012-05-21 12:00:00","2012-05-21 12:00:00"
+"2","user2","john","malcowich","john.m@example.com","1990-01-01 00:00:00","2012-05-21 12:00:00","2012-05-21 12:00:00"
