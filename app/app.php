@@ -35,6 +35,11 @@ $app->register(new Nutwerk\Provider\DoctrineORMServiceProvider(), array(
     )),
 ));
 
+$app->register(new Silex\Provider\ValidatorServiceProvider());
+$app['validator.mapping.class_metadata_factory'] = new Symfony\Component\Validator\Mapping\ClassMetadataFactory(
+    new Symfony\Component\Validator\Mapping\Loader\YamlFileLoader(__DIR__.'../data/validation/validation.yml')
+);
+
 //ensure that content type is json
 $app->before(function ($request) {
     if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {
