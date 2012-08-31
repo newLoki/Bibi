@@ -10,9 +10,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 class UsersControllerTest extends \Tests\ApplicationTestCase
 {
     /**
-     * @todo
-     * Tests:
-     *  - non existing user
+     * @todo test offset for user list (index)
      */
 
     public function testUserList()
@@ -76,5 +74,20 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $expectedData = new \stdClass();
         $expectedData->users = array($user);
         $this->assertEquals($expectedData, $data);
+    }
+
+    public function testNonExistingUser()
+    {
+        $client = $this->createClient();
+        $crwaler = $client->request('GET', '/users/non-existing-user');
+
+        $response = $client->getResponse();
+
+        $this->assertEquals('404', $response->getStatusCode());
+
+        $expectedData = new \stdClass();
+        $expectedData->messageId = 'user.notfound';
+
+        $this->assertEquals($expectedData, json_decode($response->getContent()));
     }
 }

@@ -43,21 +43,28 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                     FROM Bibi\Entity\User u
                     WHERE u.name = ?1');
             $query->setParameter('1', $id);
-            $result = $query->getSingleResult();
+            $query->setMaxResults(1);
+            $result = $query->getResult();
 
             $data = new \stdClass();
-            $data->users = array();
 
-            if(!empty($result)) {
+            if(!empty($result) && !empty($result[0])) {
+                $data->users = array();
                 $user = new \stdClass();
-                foreach($result as $key => $value) {
+                foreach($result[0] as $key => $value) {
                     $user->{$key} = $value;
                 }
 
                 $data->users[] = $user;
+
+                return $app->json($data);
+            } else {
+                $data->messageId = "user.notfound";
+
+                return $app->json($data, 404);
             }
 
-            return $app->json($data);
+
         })->bind('user.id');
 
         /*
