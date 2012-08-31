@@ -11,6 +11,7 @@
     }],
     "require": {
         "php": ">=5.3.2",
+        "symfony/event-dispatcher": "dev-master",
         "silex/silex": "dev-master",
         "doctrine/orm": "2.1.*",
         "nutwerk/doctrine-orm-provider": "dev-master",
