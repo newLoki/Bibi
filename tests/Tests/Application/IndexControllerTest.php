@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
  * @todo this is more like an integration test, maybee it is sensefull to move it into a new
  * directoy/test scenario who is called integration test
  */
-class IndexTest extends \Tests\ApplicationTestCase
+class IndexControllerTest extends \Tests\ApplicationTestCase
 {
     public function testIndexResponse()
     {
