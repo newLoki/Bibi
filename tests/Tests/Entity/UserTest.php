@@ -47,4 +47,11 @@ class UserTest extends \Tests\TestCase
         $this->_user->setSurname($surname);
         $this->assertEquals($surname, $this->_user->getSurname());
     }
+
+    public function testName()
+    {
+        $name = 'foo';
+        $this->_user->setName($name);
+        $this->assertEquals($name, $this->_user->getName());
+    }
 }

@@ -35,6 +35,12 @@ class User extends Base
     protected $birthdate;
 
     /**
+     * @Column(type="string")
+     * @var string
+     */
+    protected $name;
+
+    /**
      * Set created date to now, if a new object is constructed
      * (this is not called on hydration)
      *
@@ -154,5 +160,21 @@ class User extends Base
     public function getSurname()
     {
         return $this->surname;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }
