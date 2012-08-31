@@ -3,10 +3,7 @@ namespace Bibi\Tests\Application;
 use Silex\WebTestCase as BaseWebTestCase;
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 
-/**
- * @todo this is more like an integration test, maybee it is sensefull to move it into a new
- * directoy/test scenario who is called integration test
- */
+
 class UsersControllerTest extends \Tests\ApplicationTestCase
 {
     /**
@@ -18,7 +15,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $client = $this->createClient();
         $crawler = $client->request('GET', '/users/', array(
             "offset" => 0,
-            "rows" => 10
+            "rows"   => 10
         ));
 
         $response = $client->getResponse();
@@ -33,7 +30,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $client = $this->createClient();
         $crawler = $client->request('GET', '/users/', array(
             "offset" => 0,
-            "rows" => 1
+            "rows"   => 1
         ));
 
         $response = $client->getResponse();
@@ -89,5 +86,32 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $expectedData->messageId = 'user.notfound';
 
         $this->assertEquals($expectedData, json_decode($response->getContent()));
+    }
+
+    public function testCreationOfGoodUser()
+    {
+        $user = new \stdClass();
+        $user->name = 'foo';
+        $user->surname = 'john';
+        $user->lastname = 'doe';
+        $user->email = 'john.doe@example.com';
+        $user->birthdate = "1990-01-01";
+
+        $client = $this->createClient();
+        $crwaler = $client->request('POST', '/users/',
+            array("data" => json_encode($user))
+        );
+        $response = $client->getResponse();
+
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertContains('/users/foo', $response->getHeader('Location'));
+    }
+
+    public function testCreationOfExistingUser()
+    {
+        //should return user already exists as message and a location header with
+        //the existsing user
+        //also should return 303 (see other)
+        $this->markTestIncomplete();
     }
 }
