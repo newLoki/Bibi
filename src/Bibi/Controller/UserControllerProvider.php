@@ -11,12 +11,33 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
     {
         $controllers = new ControllerCollection();
 
+        $app->get('/users/', function() use ($app) {
+            /** @var $request \Symfony\Component\HttpFoundation\Request */
+            $request = $app['request'];
+
+            $rows = (int) $request->get('rows', 10);
+            $offset = (int) $request->get('offset', 0);
+
+            /** @var $em \Doctrine\ORM\EntityManager */
+            $em = $app['db.orm.em'];
+            $query = $em->createQuery(
+                'SELECT u.surname, u.lastname, u.email, u.birthdate, u.name
+                FROM Bibi\Entity\User u
+             ');
+            $query->setMaxResults($rows);
+            $query->setFirstResult($offset);
+
+            $result = $query->getResult();
+
+
+            return $app->json($result);
+        })->bind('users.index');
+
         $app->get('/users/{id}', function($id) use ($app)
         {
 
             /** @var $em \Doctrine\ORM\EntityManager */
             $em = $app['db.orm.em'];
-            /** @todo fetch not all users */
             $query = $em->createQuery(
                 'SELECT u.surname, u.lastname, u.email, u.birthdate, u.name
                     FROM Bibi\Entity\User u
@@ -36,7 +57,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                 $data->users[] = $user;
             }
 
-            return $app->json($data); //@todo return a specific user, or all if no id given
+            return $app->json($data);
         })->bind('user.id');
 
         /*
