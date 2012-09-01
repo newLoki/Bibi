@@ -26,8 +26,8 @@
             <column name="email" header="email" type="STRING"/>
             <column name="birthdate" header="birthdate" type="DATE" />
             <column name="password" header="password" type="STRING"/>
-            <column name="created" header="created" type="DATE"/>
-            <column name="updated" header="updated" type="DATE"/>
+            <column name="created" header="created" type="DATETIME"/>
+            <column name="updated" header="updated" type="DATETIME"/>
         </loadData>
     </changeSet>
 </databaseChangeLog>
