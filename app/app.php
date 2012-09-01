@@ -33,6 +33,8 @@ $app['validator.mapping.class_metadata_factory'] = new Symfony\Component\Validat
     new Symfony\Component\Validator\Mapping\Loader\YamlFileLoader(__DIR__.'/../data/validation/validation.yml')
 );
 
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+
 //ensure that content type is json
 $app->before(function ($request) {
     if (0 === strpos($request->headers->get('Content-Type'), 'application/json')) {

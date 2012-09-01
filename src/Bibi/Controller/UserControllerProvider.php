@@ -54,7 +54,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                 $data->users = array();
                 $user = new \stdClass();
                 foreach ($result[0] as $key => $value) {
-                    if($value instanceof \DateTime) {
+                    if ($value instanceof \DateTime) {
                         /** @var $value \DateTime */
                         $value = $value->format(\Bibi\Entity\User::DATE_BIRTH);
                     }
@@ -79,33 +79,53 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             /** @var $request \Symfony\Component\HttpFoundation\Request */
             $request = $app['request'];
 
-            $requestData = $request->get('data', "");
+            $requestData = json_decode($request->get('data', ""));
             $data = new \stdClass();
+            $status = 500;
+            $headers = array();
 
             if (!empty($requestData)) {
                 /** @var $validator Symfony\Component\Validator\Validator*/
                 $validator = $app['validator'];
+                $errors = $validator->validate($requestData);
 
-                    if (count($errors) > 0) {
-                        return (string) $errors;
+                if (count($errors) > 0) {
+                    $data->messageId = "user.datainvalid";
+                    $status = 404;
+                } else {
+
+                    /** @var $em \Doctrine\ORM\EntityManager */
+                    $em = $app['doctrine_orm.em'];
+                    $query = $em->createQuery(
+                        'SELECT  u.name
+                        FROM Bibi\Entity\User u
+                        WHERE u.name = ?1');
+                    $query->setParameter('1', $requestData->name);
+
+                    $result = $query->getArrayResult();
+                    if (count($result) == 0) {
+                        //create a new one
+                        //persist
+                        //give location header to new user back and status 201
+                        $status = 201;
                     } else {
-                        return 'The email is valid';
+                        $data->messageId = "user.exists";
+                        $status = 303;
                     }
 
-                //check if all data correct
-                //if not status 400 and message user.datainvalid
-
-                //check if user exists, when not
-                //create a new doctrine user entity
-                //persist
-                //give location header to new user back and status 201
-                //else give status 303 and existing user in location header
+                    $url = $app['url_generator']->generate('user.id', array(
+                        "id" => $requestData->name,
+                    ));
+                    $headers = array(
+                        "Location" => $url
+                    );
+                }
             } else {
                 $data->messageId = "user.datainvalid";
-
-                return $app->json($data, 404);
+                $status = 404;
             }
 
+            return $app->json($data, $status, $headers);
         })->bind('user.add');
 
         /*

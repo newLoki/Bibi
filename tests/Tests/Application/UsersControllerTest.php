@@ -59,7 +59,6 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         $data = json_decode($response->getContent());
-        //var_dump($data);
 
         $user = new \stdClass();
         $user->name = 'jon';
@@ -90,7 +89,10 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
 
     public function testCreationOfGoodUser()
     {
-        $this->markTestIncomplete();
+        /*if(APPLICATION_ENV != 'citest') {
+            $this->markTestSkipped('Skipp integration test, testdata are only clean on ci');
+        }*/
+
         $user = new \stdClass();
         $user->name = 'foo';
         $user->surname = 'john';
@@ -103,9 +105,12 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
             array("data" => json_encode($user))
         );
         $response = $client->getResponse();
+        /** @var $headers Symfony\Component\HttpFoundation\ResponseHeaderBag */
+        $headers = $response->headers;
 
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertContains('/users/foo', $response->getHeader('Location'));
+
+        $this->assertContains('/users/foo', $headers->get("Location"));
     }
 
     public function testCreationOfExistingUser()
