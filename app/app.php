@@ -12,32 +12,25 @@ $env = APPLICATION_ENV;
 $app = new Silex\Application();
 $app['debug'] = true;
 
-//register own namespace
-$app['autoloader']->registerNamespace('Bibi', realpath(__DIR__ . '/../src/'));
-
 //register Doctrine ORM extension
-$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+/*$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'db.options'            => $config['db'][$env],
-    'db.dbal.class_path'    => realpath(__DIR__.'/../vendor/doctrine/dbal/lib'),
-    'db.common.class_path'  => realpath(__DIR__.'/../vendor/doctrine/common/lib'),
+));*/
+
+$app->register(new Palma\Silex\Provider\DoctrineORMServiceProvider(), array(
+    'doctrine_orm.entities_path'     => realpath(__DIR__.'/../src/Bibi/Entity'),
+    'doctrine_orm.proxies_path'      => realpath(__DIR__.'/../var/Proxy'),
+    'doctrine_orm.proxies_namespace' => 'DoctrineProxy',
+    'doctrine_orm.connection_parameters' => array_merge(
+        $config['db'][$env],
+        array('charset'       => 'utf8')
+    )
 ));
-//var_dump($app['db.options']);
-$app['autoloader']->registerNamespace('Nutwerk', realpath(__DIR__ . '/../vendor/nutwerk/doctrine-orm-provider/lib/'));
-$app->register(new Nutwerk\Provider\DoctrineORMServiceProvider(), array(
-    'db.orm.class_path'            => realpath(__DIR__.'/../vendor/doctrine/orm/lib'),
-    'db.orm.proxies_dir'           => realpath(__DIR__.'/../var/Proxy'),
-    'db.orm.proxies_namespace'     => 'DoctrineProxy',
-    'db.orm.auto_generate_proxies' => true,
-    'db.orm.entities'              => array(array(
-        'type'      => 'annotation',
-        'path'      => realpath(__DIR__.'/../src/Bibi/Entity'),
-        'namespace' => 'Bibi\Entity',
-    )),
-));
+
 
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 $app['validator.mapping.class_metadata_factory'] = new Symfony\Component\Validator\Mapping\ClassMetadataFactory(
-    new Symfony\Component\Validator\Mapping\Loader\YamlFileLoader(__DIR__.'../data/validation/validation.yml')
+    new Symfony\Component\Validator\Mapping\Loader\YamlFileLoader(__DIR__.'/../data/validation/validation.yml')
 );
 
 //ensure that content type is json

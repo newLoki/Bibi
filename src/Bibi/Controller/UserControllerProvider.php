@@ -10,7 +10,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
 {
     public function connect(Application $app)
     {
-        $controllers = new ControllerCollection();
+        $controllers = new ControllerCollection($app['route_factory']);
 
         $app->get('/users/', function() use ($app)
         {
@@ -21,7 +21,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             $offset = (int)$request->get('offset', 0);
 
             /** @var $em \Doctrine\ORM\EntityManager */
-            $em = $app['db.orm.em'];
+            $em = $app['doctrine_orm.em'];
             $query = $em->createQuery(
                 'SELECT u.surname, u.lastname, u.email, u.birthdate, u.name
                 FROM Bibi\Entity\User u
@@ -39,7 +39,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
         {
 
             /** @var $em \Doctrine\ORM\EntityManager */
-            $em = $app['db.orm.em'];
+            $em = $app['doctrine_orm.em'];
             $query = $em->createQuery(
                 'SELECT u.surname, u.lastname, u.email, u.birthdate, u.name
                     FROM Bibi\Entity\User u
@@ -78,7 +78,9 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             $data = new \stdClass();
 
             if (!empty($requestData)) {
-                $validator = $app['validator']->validateValue($email, new Validator\User());
+                /** @var $validator */
+                $validator = $app['validator'];
+                var_dump(get_class($validator));
 
                     if (count($errors) > 0) {
                         return (string) $errors;
