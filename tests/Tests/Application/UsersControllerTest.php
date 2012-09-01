@@ -19,7 +19,6 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         ));
 
         $response = $client->getResponse();
-
         $this->assertEquals(200, $response->getStatusCode());
 
         $this->assertTrue(is_array(json_decode($response->getContent())));
@@ -60,6 +59,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $this->assertEquals(200, $response->getStatusCode());
 
         $data = json_decode($response->getContent());
+        //var_dump($data);
 
         $user = new \stdClass();
         $user->name = 'jon';
@@ -90,6 +90,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
 
     public function testCreationOfGoodUser()
     {
+        $this->markTestIncomplete();
         $user = new \stdClass();
         $user->name = 'foo';
         $user->surname = 'john';

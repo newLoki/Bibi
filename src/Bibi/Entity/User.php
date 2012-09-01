@@ -29,7 +29,7 @@ class User extends Base
     protected $email;
 
     /**
-     * @Column(type="datetime")
+     * @Column(type="date")
      * @var \DateTime
      */
     protected $birthdate;

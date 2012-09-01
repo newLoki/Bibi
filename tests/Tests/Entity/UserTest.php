@@ -18,6 +18,7 @@ class UserTest extends \Tests\TestCase
     public function testBirthdate()
     {
         $date = new \DateTime();
+
         $this->_user->setBirthdate($date);
         $this->assertInstanceOf(
             'DateTime',

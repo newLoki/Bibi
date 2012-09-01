@@ -54,6 +54,11 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                 $data->users = array();
                 $user = new \stdClass();
                 foreach ($result[0] as $key => $value) {
+                    if($value instanceof \DateTime) {
+                        /** @var $value \DateTime */
+                        $value = $value->format(\Bibi\Entity\User::DATE_BIRTH);
+                    }
+
                     $user->{$key} = $value;
                 }
 
@@ -78,9 +83,8 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             $data = new \stdClass();
 
             if (!empty($requestData)) {
-                /** @var $validator */
+                /** @var $validator Symfony\Component\Validator\Validator*/
                 $validator = $app['validator'];
-                var_dump(get_class($validator));
 
                     if (count($errors) > 0) {
                         return (string) $errors;
