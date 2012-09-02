@@ -43,9 +43,9 @@ $app->before(function ($request) {
     }
 });
 
-$app->error(function (\Doctrine\ORM\ORMException $e, $code) use ($app) {
+$app->error(function (\Exception $e, $code) use ($app) {
     if(!$app['debug']) {
-        return $app->json(array('Message' => 'Doctrine failure'), 500);
+        return $app->json(array('messageId' => 'undefined.error'), 500);
     } else {
         return $app->json(array(
             'Message' => $e->getMessage(),
