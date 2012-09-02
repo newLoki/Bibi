@@ -17,13 +17,10 @@ class UserTest extends \Tests\TestCase
 
     public function testBirthdate()
     {
-        $date = new \DateTime();
+        $date = '1990-01-01';
 
         $this->_user->setBirthdate($date);
-        $this->assertInstanceOf(
-            'DateTime',
-            $this->_user->getBirthdate()
-        );
+        $this->assertInternalType('string', $this->_user->getBirthdate());
         $this->assertEquals($date, $this->_user->getBirthdate());
 
     }

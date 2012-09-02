@@ -2,7 +2,7 @@
 namespace Bibi\Entity;
 
 /**
- * @Entity
+ * @Entity(repositoryClass="Bibi\Repo\UserRepo")
  * @Table(name="users")
  */
 class User extends Base
@@ -35,21 +35,11 @@ class User extends Base
     protected $birthdate;
 
     /**
+     * @Id
      * @Column(type="string")
      * @var string
      */
     protected $name;
-
-    /**
-     * Set created date to now, if a new object is constructed
-     * (this is not called on hydration)
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * set birthdate for user
@@ -58,7 +48,7 @@ class User extends Base
      */
     public function setBirthdate($birthdate)
     {
-        $this->birthdate = $birthdate;
+        $this->birthdate = \DateTime::createFromFormat(self::DATE_BIRTH, $birthdate);
     }
 
     /**
@@ -68,7 +58,7 @@ class User extends Base
      */
     public function getBirthdate()
     {
-        return $this->birthdate;
+        return $this->birthdate->format(self::DATE_BIRTH);
     }
 
     /**
