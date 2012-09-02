@@ -35,7 +35,6 @@ class User extends Base
     protected $birthdate;
 
     /**
-     * @Id
      * @Column(type="string")
      * @var string
      */

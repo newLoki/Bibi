@@ -61,6 +61,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $data = json_decode($response->getContent());
 
         $user = new \stdClass();
+        $user->id = 1;
         $user->name = 'jon';
         $user->surname = 'john';
         $user->lastname = 'doe';
