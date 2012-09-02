@@ -52,7 +52,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
     public function testExistingUserResponse()
     {
         $client = $this->createClient();
-        $crawler = $client->request('GET', '/users/jon');
+        $crawler = $client->request('GET', '/users/1');
 
         $response = $client->getResponse();
 
@@ -76,7 +76,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
     public function testNonExistingUser()
     {
         $client = $this->createClient();
-        $crwaler = $client->request('GET', '/users/non-existing-user');
+        $crwaler = $client->request('GET', '/users/666');
 
         $response = $client->getResponse();
 
@@ -110,7 +110,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $headers = $response->headers;
 
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertContains('/users/foo', $headers->get("Location"));
+        $this->assertContains('/users/', $headers->get("Location"));
 
         //@todo remove created user
     }

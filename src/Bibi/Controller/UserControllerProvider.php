@@ -40,7 +40,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             /** @var $em \Doctrine\ORM\EntityManager */
             $em = $app['doctrine_orm.em'];
             $user = $em->getRepository("Bibi\Entity\User");
-            $result = $user->findOneByName($id);
+            $result = $user->findOneById($id);
 
             $data = new \stdClass();
             $status = 500;
@@ -77,14 +77,12 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                 } else {
                     /** @var $em \Doctrine\ORM\EntityManager */
                     $em = $app['doctrine_orm.em'];
-                    $query = $em->createQuery(
-                        'SELECT  u.name
-                         FROM Bibi\Entity\User u
-                         WHERE u.name = ?1');
-                    $query->setParameter('1', $requestData->name);
+                    /** @var $userRepo \Bibi\Repo\UserRepo */
+                    $userRepo = $em->getRepository("Bibi\Entity\User");
+                    /** @var $result \Bibi\Entity\User */
+                    $result = $userRepo->findOneByName($requestData->name);
 
-                    $result = $query->getArrayResult();
-                    if (count($result) == 0) {
+                    if (empty($result)) {
                         $user = new \Bibi\Entity\User();
                         foreach (get_object_vars($requestData) as $attr => $value) {
                             $methodName = "set" . ucfirst($attr);
@@ -98,15 +96,18 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                         $em->persist($user);
                         $em->flush();
 
+                        $url = $app['url_generator']->generate('user.id', array(
+                            "id" => $user->getId(),
+                        ));
                         $status = 201;
                     } else {
+                        $url = $app['url_generator']->generate('user.id', array(
+                            "id" => $result->getId(),
+                        ));
                         $data->messageId = "user.exists";
                         $status = 303;
                     }
 
-                    $url = $app['url_generator']->generate('user.id', array(
-                        "id" => $requestData->name,
-                    ));
                     $headers = array(
                         "Location" => $url
                     );
@@ -119,8 +120,14 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             return $app->json($data, $status, $headers);
         })->bind('user.add');
 
+    $app->delete('/users/{id}', function($id) use ($app) {
+        //find user,
+        //if not exists, 404
+        //if exists, delete + 200
+    })->bind('user.delete');
+
     /*
-    * @todo create user
+    * @todo
     *       delete user
     *       update user
     *       Application tests
