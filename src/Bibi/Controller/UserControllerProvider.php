@@ -12,8 +12,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
     {
         $controllers = new ControllerCollection($app['route_factory']);
 
-        $app->get('/users/', function() use ($app)
-        {
+        $app->get('/users/', function() use ($app) {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
             $request = $app['request'];
 
@@ -21,6 +20,7 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             $offset = (int)$request->get('offset', 0);
 
             /** @var $em \Doctrine\ORM\EntityManager */
+            //@todo refactor to use repo
             $em = $app['doctrine_orm.em'];
             $query = $em->createQuery(
                 'SELECT u.surname, u.lastname, u.email, u.birthdate, u.name
@@ -35,47 +35,29 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             return $app->json($result);
         })->bind('users.index');
 
-        $app->get('/users/{id}', function($id) use ($app)
-        {
+        $app->get('/users/{id}', function($id) use ($app) {
 
             /** @var $em \Doctrine\ORM\EntityManager */
             $em = $app['doctrine_orm.em'];
-            $query = $em->createQuery(
-                'SELECT u.surname, u.lastname, u.email, u.birthdate, u.name
-                    FROM Bibi\Entity\User u
-                    WHERE u.name = ?1');
-            $query->setParameter('1', $id);
-            $query->setMaxResults(1);
-            $result = $query->getResult();
+            $user = $em->getRepository("Bibi\Entity\User");
+            $result = $user->findOneByName($id);
 
             $data = new \stdClass();
+            $status = 500;
 
-            if (!empty($result) && !empty($result[0])) {
-                $data->users = array();
-                $user = new \stdClass();
-                foreach ($result[0] as $key => $value) {
-                    if ($value instanceof \DateTime) {
-                        /** @var $value \DateTime */
-                        $value = $value->format(\Bibi\Entity\User::DATE_BIRTH);
-                    }
-
-                    $user->{$key} = $value;
-                }
-
-                $data->users[] = $user;
-
-                return $app->json($data);
+            if (!empty($result)) {
+                $data->users = array($result->getSimpleObject());
+                $status = 200;
             } else {
                 $data->messageId = "user.notfound";
+                $status = 404;
 
-                return $app->json($data, 404);
             }
 
-
+            return $app->json($data, $status);
         })->bind('user.id');
 
-        $app->post('/users/', function() use ($app)
-        {
+        $app->post('/users/', function() use ($app) {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
             $request = $app['request'];
 
@@ -93,20 +75,29 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
                     $data->messageId = "user.datainvalid";
                     $status = 404;
                 } else {
-
                     /** @var $em \Doctrine\ORM\EntityManager */
                     $em = $app['doctrine_orm.em'];
                     $query = $em->createQuery(
                         'SELECT  u.name
-                        FROM Bibi\Entity\User u
-                        WHERE u.name = ?1');
+                         FROM Bibi\Entity\User u
+                         WHERE u.name = ?1');
                     $query->setParameter('1', $requestData->name);
 
                     $result = $query->getArrayResult();
                     if (count($result) == 0) {
-                        //create a new one
-                        //persist
-                        //give location header to new user back and status 201
+                        $user = new \Bibi\Entity\User();
+                        foreach (get_object_vars($requestData) as $attr => $value) {
+                            $methodName = "set" . ucfirst($attr);
+                            call_user_func_array(
+                                array($user, $methodName),
+                                array($value)
+                            );
+
+                        }
+
+                        $em->persist($user);
+                        $em->flush();
+
                         $status = 201;
                     } else {
                         $data->messageId = "user.exists";
@@ -128,14 +119,14 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             return $app->json($data, $status, $headers);
         })->bind('user.add');
 
-        /*
-         * @todo create user
-         *       delete user
-         *       update user
-         *       Application tests
-         */
+    /*
+    * @todo create user
+    *       delete user
+    *       update user
+    *       Application tests
+    */
 
-        return $controllers;
+    return $controllers;
     }
 }
 

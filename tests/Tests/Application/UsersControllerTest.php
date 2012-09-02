@@ -89,9 +89,9 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
 
     public function testCreationOfGoodUser()
     {
-        /*if(APPLICATION_ENV != 'citest') {
-            $this->markTestSkipped('Skipp integration test, testdata are only clean on ci');
-        }*/
+        if(APPLICATION_ENV != 'citest') {
+            $this->markTestSkipped('should be skipped, until there is a possibility to remove the created user');
+        }
 
         $user = new \stdClass();
         $user->name = 'foo';
@@ -109,8 +109,9 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $headers = $response->headers;
 
         $this->assertEquals(201, $response->getStatusCode());
-
         $this->assertContains('/users/foo', $headers->get("Location"));
+
+        //@todo remove created user
     }
 
     public function testCreationOfExistingUser()
