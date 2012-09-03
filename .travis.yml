@@ -11,3 +11,9 @@ env:
 
 script:
   - phpunit --configuration phpunit.travis.xml.dist
+
+branches:
+  only:
+    - master
+    - develop
+    - /^feature\/*$/
