@@ -121,14 +121,28 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
         })->bind('user.add');
 
     $app->delete('/users/{id}', function($id) use ($app) {
-        //find user,
-        //if not exists, 404
-        //if exists, delete + 200
+        /** @var $em \Doctrine\ORM\EntityManager */
+        $em = $app['doctrine_orm.em'];
+        /** @var $userRepo \Bibi\Repo\UserRepo */
+        $userRepo = $em->getRepository("Bibi\Entity\User");
+        /** @var $result \Bibi\Entity\User */
+        $result = $userRepo->findOneById((int) $id);
+
+        $status = 500;
+
+        if(empty($result)) {
+            $status = 410;
+        } else {
+            $em->remove($result);
+            $em->flush();
+            $status = 200;
+        }
+
+        return $app->json(null, $status);
     })->bind('user.delete');
 
     /*
     * @todo
-    *       delete user
     *       update user
     *       Application tests
     */

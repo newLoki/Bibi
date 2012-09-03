@@ -90,10 +90,6 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
 
     public function testCreationOfGoodUser()
     {
-        if(APPLICATION_ENV != 'citest') {
-            $this->markTestSkipped('should be skipped, until there is a possibility to remove the created user');
-        }
-
         $user = new \stdClass();
         $user->name = 'foo';
         $user->surname = 'john';
@@ -110,16 +106,73 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $headers = $response->headers;
 
         $this->assertEquals(201, $response->getStatusCode());
-        $this->assertContains('/users/', $headers->get("Location"));
+        $location = $headers->get("Location");
+        $this->assertContains('/users/', $location);
 
-        //@todo remove created user
+        //remove created user
+        $client = $this->createClient();
+        $crwaler = $client->request('DELETE', $location);
     }
 
     public function testCreationOfExistingUser()
     {
-        //should return user already exists as message and a location header with
-        //the existsing user
-        //also should return 303 (see other)
-        $this->markTestIncomplete();
+        $user = new \stdClass();
+        $user->name = 'foo';
+        $user->surname = 'john';
+        $user->lastname = 'doe';
+        $user->email = 'john.doe@example.com';
+        $user->birthdate = "1990-01-01";
+
+        $client = $this->createClient();
+        $crwaler = $client->request('POST', '/users/',
+            array("data" => json_encode($user))
+        );
+        $userLocation = $client->getResponse()->headers->get("Location");
+
+        //make the second request with the same data
+        $client = $this->createClient();
+        $crwaler = $client->request('POST', '/users/',
+            array("data" => json_encode($user))
+        );
+        $location = $client->getResponse()->headers->get("Location");
+        $this->assertEquals(303, $client->getResponse()->getStatusCode());
+        $this->assertContains($userLocation, $location);
+
+        //remove created user
+        $client = $this->createClient();
+        $crwaler = $client->request('DELETE', $location);
+    }
+
+    public function testDeletionOfExistingUser()
+    {
+        $user = new \stdClass();
+        $user->name = 'foo';
+        $user->surname = 'john';
+        $user->lastname = 'doe';
+        $user->email = 'john.doe@example.com';
+        $user->birthdate = "1990-01-01";
+
+        $client = $this->createClient();
+        $crwaler = $client->request('POST', '/users/',
+            array("data" => json_encode($user))
+        );
+        $userLocation = $client->getResponse()->headers->get("Location");
+
+        //remove created user
+        $client = $this->createClient();
+        $crwaler = $client->request('DELETE', $userLocation);
+
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    public function testDeletionOfNonExistingUser()
+    {
+        //remove a not existing user
+        $client = $this->createClient();
+        $crwaler = $client->request('DELETE', '/users/666');
+        $response = $client->getResponse();
+        //resource has gone, give 410 as status means gone
+        $this->assertEquals(410, $response->getStatusCode());
     }
 }
