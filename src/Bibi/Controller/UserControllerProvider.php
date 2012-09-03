@@ -55,7 +55,8 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
             }
 
             return $app->json($data, $status);
-        })->bind('user.id');
+        })->bind('user.id')
+        ->convert('id', function ($id) { return (int) $id; });
 
         $app->post('/users/', function() use ($app) {
             /** @var $request \Symfony\Component\HttpFoundation\Request */
@@ -139,7 +140,8 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
         }
 
         return $app->json(null, $status);
-    })->bind('user.delete');
+    })->bind('user.delete')
+    ->convert('id', function ($id) { return (int) $id; });
 
     /*
     * @todo
