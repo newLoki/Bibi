@@ -131,15 +131,19 @@ class UserControllerProvider implements \Silex\ControllerProviderInterface
 
         $status = 500;
 
+        $data = new \stdClass();
+
         if(empty($result)) {
             $status = 410;
+            $data->messageId = 'user.notexists';
         } else {
             $em->remove($result);
             $em->flush();
             $status = 200;
+            $data->messageId = 'user.removed';
         }
 
-        return $app->json(null, $status);
+        return $app->json($data, $status);
     })->bind('user.delete')
     ->convert('id', function ($id) { return (int) $id; });
 
