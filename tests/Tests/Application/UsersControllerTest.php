@@ -114,6 +114,16 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $crwaler = $client->request('DELETE', $location);
     }
 
+    public function testCreationOfBadUser()
+    {
+        $this->markTestIncomplete();
+    }
+
+    public function testEmptyCreateUser()
+    {
+        $this->markTestIncomplete();
+    }
+
     public function testCreationOfExistingUser()
     {
         $user = new \stdClass();
@@ -134,9 +144,13 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $crwaler = $client->request('POST', '/users/',
             array("data" => json_encode($user))
         );
-        $location = $client->getResponse()->headers->get("Location");
-        $this->assertEquals(303, $client->getResponse()->getStatusCode());
+        $response = $client->getResponse();
+        $location = $response->headers->get("Location");
+        $this->assertEquals(303, $response->getStatusCode());
         $this->assertContains($userLocation, $location);
+        //check content user.exists
+        $result = json_decode($response->getContent());
+        $this->assertEquals('user.exists', $result->messageId);
 
         //remove created user
         $client = $this->createClient();
@@ -164,6 +178,8 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
 
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
+        $result = json_decode($response->getContent());
+        $this->assertEquals('user.removed', $result->messageId);
     }
 
     public function testDeletionOfNonExistingUser()
@@ -174,5 +190,7 @@ class UsersControllerTest extends \Tests\ApplicationTestCase
         $response = $client->getResponse();
         //resource has gone, give 410 as status means gone
         $this->assertEquals(410, $response->getStatusCode());
+        $result = json_decode($response->getContent());
+        $this->assertEquals('user.notexists', $result->messageId);
     }
 }
