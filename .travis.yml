@@ -3,7 +3,7 @@ php:
   - 5.3
   - 5.4
 before_script:
-  - "composer install"
+  - "composer update"
   - "mysql -uroot -e 'create database bibi;'"
   - 'java -jar build/liquibase.jar --driver=com.mysql.jdbc.Driver --classpath=build/databasedriver/mysql-connector-java-5.1.17-bin.jar --changeLogFile=data/sql/changelog.xml --url="jdbc:mysql://127.0.0.1:3306/bibi" --username=root --password="" --contexts="test" migrate'
 env:
