@@ -1,5 +1,5 @@
 {
-    "name": "Mayflower/bibi",
+    "name": "mayflower/bibi",
     "description": "Bibi is a little service to manage our book library",
     "keywords": ["silex", "rest", "api"],
     "type": "library",
